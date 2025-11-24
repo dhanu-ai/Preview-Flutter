@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  flutter:
+    build:
+      context: .
+      dockerfile: Dockerfile.flutter
+    container_name: preview-flutter
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./flutter-project:/app/project
+
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.runner
+    container_name: preview-runner
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./runner:/app/runner
+      - ./flutter-project:/app/project
+    depends_on:
+      - flutter
+
+  frontend:
+    image: python:3.10-slim
+    container_name: preview-frontend
+    working_dir: /app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend:/app
+      - ./requirements.txt:/app/requirements.txt
+    command: >
+      bash -c "pip install --no-cache-dir -r requirements.txt &&
+               export PATH=$PATH:/root/.local/bin &&
+               streamlit run main.py --server.port 8501 --server.address 0.0.0.0"
+    depends_on:
+      - runner
+      - flutter
