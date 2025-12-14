@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  flutter-preview:
+    build:
+      context: ./preview
+    container_name: flutter-preview-mvp
+    ports:
+      - "8080:8080"   # Flutter web preview
+      - "7000:7000"   # JSON upload API
+    stdin_open: true
+    tty: true
