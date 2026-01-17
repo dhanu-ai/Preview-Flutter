@@ -1,0 +1,11 @@
+services:
+  flutter-builder:
+    build:
+      context: .
+    env_file:
+      - ../.env
+    environment:
+      PROJECT_ID: ${PROJECT_ID}
+      PROJECT_NAME: ${PROJECT_NAME}
+    volumes:
+      - ../ui:/ui
